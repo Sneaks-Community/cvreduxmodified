@@ -93,6 +93,8 @@ new bool:bCancelVoteGameEnd;
 new iAutoBanDuration;
 new bool:IsTF2 = false;
 new bool:IsCSGO = false;
+new bool:IsMapEnding = false;
+
 enum
 {
 	VoteType_Players = 0,
@@ -177,6 +179,7 @@ public OnPluginStart()
 
 public OnMapStart()
 {
+	IsMapEnding = false;
 	g_iMapTime = 0;
 	//g_bMapEnded = false; // map started, set it to false
 
@@ -203,6 +206,8 @@ public OnMapEnd()
 	{
 		g_bMapEnded = true;
 	} */
+	
+	IsMapEnding = true;
 	
 	if((!IsTF2) && !bCancelVoteGameEnd)
 	{
@@ -479,6 +484,9 @@ public Action:Command_Reload(iClient, iArgs)
 
 public Action:Command_ChooseVote(iClient, iArgs)
 {
+	if(IsMapEnding)
+		return Plugin_Handled;
+
 	if(!IsValidClient(iClient))
 		return Plugin_Continue;
 
@@ -2110,6 +2118,8 @@ public Action:TF_WaveFailed(Handle:event, const String:name[], bool:dontBroadcas
 // Cancel votes on Game Over (TF2)
 public Action:TF_TeamPlayWinPanel(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	IsMapEnding = true;
+	
 	if(bCancelVoteGameEnd)
 	{
 		//g_bMapEnded = true;
@@ -2129,6 +2139,8 @@ public Action:TF_TeamPlayWinPanel(Handle:event, const String:name[], bool:dontBr
 }
 public Action:TF_ArenaWinPanel(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	IsMapEnding = true;
+	
 	if(bCancelVoteGameEnd)
 	{
 		//g_bMapEnded = true;
@@ -2148,6 +2160,8 @@ public Action:TF_ArenaWinPanel(Handle:event, const String:name[], bool:dontBroad
 }
 public Action:TF_MVMWinPanel(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	IsMapEnding = true;
+
 	if(bCancelVoteGameEnd)
 	{
 		//g_bMapEnded = true;
@@ -2168,21 +2182,21 @@ public Action:TF_MVMWinPanel(Handle:event, const String:name[], bool:dontBroadca
 // Cancel votes on round end (CSGO)
 public Action:CSGO_MapEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	IsMapEnding = true;
+	
 	if(bCancelVoteGameEnd)
 	{
 		//g_bMapEnded = true;
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
-			LogToFileEx(g_sLogPath,
-				"[Custom Votes] CS:GO Match End Panel detected while a vote was in progress, canceling vote.");
+			LogToFileEx(g_sLogPath, "[Custom Votes] CS:GO Match End Panel detected while a vote was in progress, canceling vote.");
 		}
 	}
 	
 	if(bDebugMode) // If debug is enabled, log events
 	{
-		LogToFileEx(g_sLogPath,
-			"[Custom Votes] DEBUG: Event CSGO_MapEnd. bCancelVoteGameEnd: %d IsVoteInProgress: %d", bCancelVoteGameEnd, IsVoteInProgress());
+		LogToFileEx(g_sLogPath, "[Custom Votes] DEBUG: Event CSGO_MapEnd. bCancelVoteGameEnd: %d IsVoteInProgress: %d", bCancelVoteGameEnd, IsVoteInProgress());
 	}
 }
 
