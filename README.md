@@ -1,6 +1,5 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
-![Downloads](https://img.shields.io/github/downloads/caxanga334/cvreduxmodified/latest/total.svg?style=flat-square)
 
 **Custom Votes Redux - Modified**
 =================================
@@ -56,8 +55,8 @@ STEAM_ID ) targeting rees123 ( STEAM_ID ).
 
 **Download**
 =================================
-For stable version, check the [releases](https://github.com/caxanga334/cvreduxmodified/releases) tab.
-For development version, download the repository.
+For stable version, download the master branch and compile.
+For development version, check the dev branch (if exists).
 
 Feel free to report bugs/give suggestions.
 

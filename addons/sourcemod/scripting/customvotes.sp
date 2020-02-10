@@ -93,6 +93,8 @@ new bool:bCancelVoteGameEnd;
 new iAutoBanDuration;
 new bool:IsTF2 = false;
 new bool:IsCSGO = false;
+new bool:IsMapEnding = false;
+
 enum
 {
 	VoteType_Players = 0,
@@ -135,7 +137,7 @@ public OnPluginStart()
 	HookConVarChange( CvarDebugMode, OnConVarChanged );
 	CvarAfkManager = CreateConVar("sm_cv_afkenable", "0", "Enable Afk players are no longer counted in the total?", FCVAR_NONE, true, 0.0, true, 1.0); //Enable Afk players are no longer counted in the total?
 	HookConVarChange( CvarAfkManager, OnConVarChanged );
-	CvarAfkTime = CreateConVar("sm_cv_afktime", "10", "How long (Seconds) Afk players are no longer counted in the total?", FCVAR_NONE, true, 0.0, true, 1000.0); //How long Afk players are no longer counted in the total?
+	CvarAfkTime = CreateConVar("sm_cv_afktime", "60", "How long (Seconds) Afk players are no longer counted in the total?", FCVAR_NONE, true, 0.0, true, 1000.0); //How long Afk players are no longer counted in the total?
 	HookConVarChange( CvarAfkTime, OnConVarChanged );
 	
 	RegAdminCmd("sm_customvotes_reload", Command_Reload, ADMFLAG_ROOT, "Reloads the configuration file (Clears all votes)");
@@ -177,6 +179,7 @@ public OnPluginStart()
 
 public OnMapStart()
 {
+	IsMapEnding = false;
 	g_iMapTime = 0;
 	//g_bMapEnded = false; // map started, set it to false
 
@@ -193,8 +196,6 @@ public OnMapStart()
 
 	Config_Load();
 	CreateTimer(1.0, Timer_Second, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-	
-	CreateLogFile();
 }
 
 public OnMapEnd()
@@ -204,13 +205,15 @@ public OnMapEnd()
 		g_bMapEnded = true;
 	} */
 	
-	if((!IsCSGO || !IsTF2) && !bCancelVoteGameEnd)
+	IsMapEnding = true;
+	
+	if((!IsTF2) && !bCancelVoteGameEnd)
 	{
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
+				"[Custom Votes] Map ended while a vote was in progress, canceling vote.");
 		}
 	}
 }
@@ -438,7 +441,7 @@ public OnClientDisconnect(iTarget)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Vote target disconnected while vote was in progress! The target was: %s ( %s ).",
+				"[Custom Votes] Vote target disconnected while vote was in progress! The target was: %s (%s).",
 				LogstrTargetName,
 				LstrTargetAuth);
 				
@@ -481,10 +484,16 @@ public Action:Command_ChooseVote(iClient, iArgs)
 {
 	if(!IsValidClient(iClient))
 		return Plugin_Continue;
+		
+	if(IsMapEnding)
+	{
+		CReplyToCommand(iClient, "%t", "Map Ending");
+		return Plugin_Handled;
+	}
 
 	if(IsVoteInProgress())
 	{
-		CReplyToCommand(iClient, "[SM] %t", "Vote in Progress");
+		CReplyToCommand(iClient, "%t", "Vote In Progress");
 		return Plugin_Handled;
 	}
 
@@ -621,7 +630,7 @@ public Menu_PlayersVote(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -746,7 +755,7 @@ public MenuHandler_PlayersVote(Handle:hMenu, MenuAction:iAction, iVoter, iParam2
 
 		if(IsVoteInProgress())
 		{
-			CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+			CPrintToChat(iVoter, "%t", "Vote In Progress");
 			return;
 		}
 
@@ -817,7 +826,7 @@ public Vote_Players(iVote, iVoter, iTarget)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -909,7 +918,7 @@ public Vote_Players(iVote, iVoter, iTarget)
 		
 		// Logging Vote
 		LogToFileEx(g_sLogPath,
-			"[Custom Votes] Vote %s started by %s ( %s ) targeting %s ( %s ).",
+			"[Custom Votes] Vote %s started by %s (%s) targeting %s (%s).",
 			LogstrName,
 			LogstrVoterName,
 			LstrVoterAuth,
@@ -1033,7 +1042,7 @@ public Menu_MapVote(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1165,7 +1174,7 @@ public MenuHandler_MapVote(Handle:hMenu, MenuAction:iAction, iVoter, iParam2)
 
 		if(IsVoteInProgress())
 		{
-			CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+			CPrintToChat(iVoter, "%t", "Vote In Progress");
 			return;
 		}
 
@@ -1242,7 +1251,7 @@ public Vote_Map(iVote, iVoter, iMap)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1323,7 +1332,7 @@ public Vote_Map(iVote, iVoter, iMap)
 		
 		// Logging Vote
 		LogToFileEx(g_sLogPath,
-			"[Custom Votes] Vote %s started by %s ( %s ). To change map from %s to %s.",
+			"[Custom Votes] Vote %s started by %s (%s). To change map from %s to %s.",
 			LogstrName,
 			LogstrVoterName,
 			LstrVoterAuth,
@@ -1432,7 +1441,7 @@ public Menu_ListVote(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1532,7 +1541,7 @@ public MenuHandler_ListVote(Handle:hMenu, MenuAction:iAction, iVoter, iParam2)
 
 		if(IsVoteInProgress())
 		{
-			CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+			CPrintToChat(iVoter, "%t", "Vote In Progress");
 			return;
 		}
 
@@ -1592,7 +1601,7 @@ public Vote_List(iVote, iVoter, iOption)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1670,7 +1679,7 @@ public Vote_List(iVote, iVoter, iOption)
 		
 		// Logging Vote
 		LogToFileEx(g_sLogPath,
-			"[Custom Votes] Vote %s started by %s ( %s ). Selected Option: %s",
+			"[Custom Votes] Vote %s started by %s (%s). Selected Option: %s",
 			LogstrName,
 			LogstrVoterName,
 			LstrVoterAuth,
@@ -1778,7 +1787,7 @@ public CastSimpleVote(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1867,7 +1876,7 @@ public Vote_Simple(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1940,7 +1949,7 @@ public Vote_Simple(iVote, iVoter)
 		
 		// Logging Vote
 		LogToFileEx(g_sLogPath,
-			"[Custom Votes] Vote %s started by %s ( %s ).",
+			"[Custom Votes] Vote %s started by %s (%s).",
 			LogstrName,
 			LogstrVoterName,
 			LstrVoterAuth);
@@ -2110,6 +2119,8 @@ public Action:TF_WaveFailed(Handle:event, const String:name[], bool:dontBroadcas
 // Cancel votes on Game Over (TF2)
 public Action:TF_TeamPlayWinPanel(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	IsMapEnding = true;
+	
 	if(bCancelVoteGameEnd)
 	{
 		//g_bMapEnded = true;
@@ -2129,6 +2140,8 @@ public Action:TF_TeamPlayWinPanel(Handle:event, const String:name[], bool:dontBr
 }
 public Action:TF_ArenaWinPanel(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	IsMapEnding = true;
+	
 	if(bCancelVoteGameEnd)
 	{
 		//g_bMapEnded = true;
@@ -2148,6 +2161,8 @@ public Action:TF_ArenaWinPanel(Handle:event, const String:name[], bool:dontBroad
 }
 public Action:TF_MVMWinPanel(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	IsMapEnding = true;
+
 	if(bCancelVoteGameEnd)
 	{
 		//g_bMapEnded = true;
@@ -2168,21 +2183,21 @@ public Action:TF_MVMWinPanel(Handle:event, const String:name[], bool:dontBroadca
 // Cancel votes on round end (CSGO)
 public Action:CSGO_MapEnd(Handle:event, const String:name[], bool:dontBroadcast)
 {
+	IsMapEnding = true;
+	
 	if(bCancelVoteGameEnd)
 	{
 		//g_bMapEnded = true;
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
-			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
+			LogToFileEx(g_sLogPath, "[Custom Votes] CS:GO Match End Panel detected while a vote was in progress, canceling vote.");
 		}
 	}
 	
 	if(bDebugMode) // If debug is enabled, log events
 	{
-		LogToFileEx(g_sLogPath,
-			"[Custom Votes] DEBUG: Event CSGO_MapEnd. bCancelVoteGameEnd: %d IsVoteInProgress: %d", bCancelVoteGameEnd, IsVoteInProgress());
+		LogToFileEx(g_sLogPath, "[Custom Votes] DEBUG: Event CSGO_MapEnd. bCancelVoteGameEnd: %d IsVoteInProgress: %d", bCancelVoteGameEnd, IsVoteInProgress());
 	}
 }
 
@@ -2503,7 +2518,7 @@ public bool:CheckVotesForTarget(iVote, iTarget)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Last vote ( %s ) passed. The Target was: %s ( %s ).",
+				"[Custom Votes] Last vote (%s) passed. The Target was: %s (%s).",
 				LogstrName,
 				LogstrTargetName,
 				LstrTargetAuth);
@@ -2561,7 +2576,7 @@ public bool:CheckVotesForMap(iVote, iMap)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Last vote ( %s ) passed. Map was changed from %s to %s.",
+				"[Custom Votes] Last vote (%s) passed. Map was changed from %s to %s.",
 				LogstrName,
 				LogstrCurrentMap,
 				LogstrMap);
@@ -2615,7 +2630,7 @@ public bool:CheckVotesForOption(iVote, iOption)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Last vote ( %s ) passed. ( Option: %s ).",
+				"[Custom Votes] Last vote (%s) passed. ( Option: %s ).",
 				LogstrName,
 				LstrOptionResult);
 		}
@@ -2680,7 +2695,7 @@ public bool:CheckVotesForSimple(iVote)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Last vote ( %s ) passed.",
+				"[Custom Votes] Last vote (%s) passed.",
 				LogstrName);
 		}
 		return true;
