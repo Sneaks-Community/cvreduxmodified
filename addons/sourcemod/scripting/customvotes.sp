@@ -632,7 +632,7 @@ public Menu_PlayersVote(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -757,7 +757,7 @@ public MenuHandler_PlayersVote(Handle:hMenu, MenuAction:iAction, iVoter, iParam2
 
 		if(IsVoteInProgress())
 		{
-			CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+			CPrintToChat(iVoter, "%t", "Vote In Progress");
 			return;
 		}
 
@@ -828,7 +828,7 @@ public Vote_Players(iVote, iVoter, iTarget)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1044,7 +1044,7 @@ public Menu_MapVote(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1176,7 +1176,7 @@ public MenuHandler_MapVote(Handle:hMenu, MenuAction:iAction, iVoter, iParam2)
 
 		if(IsVoteInProgress())
 		{
-			CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+			CPrintToChat(iVoter, "%t", "Vote In Progress");
 			return;
 		}
 
@@ -1253,7 +1253,7 @@ public Vote_Map(iVote, iVoter, iMap)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1443,7 +1443,7 @@ public Menu_ListVote(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1543,7 +1543,7 @@ public MenuHandler_ListVote(Handle:hMenu, MenuAction:iAction, iVoter, iParam2)
 
 		if(IsVoteInProgress())
 		{
-			CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+			CPrintToChat(iVoter, "%t", "Vote In Progress");
 			return;
 		}
 
@@ -1603,7 +1603,7 @@ public Vote_List(iVote, iVoter, iOption)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1789,7 +1789,7 @@ public CastSimpleVote(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
@@ -1878,7 +1878,7 @@ public Vote_Simple(iVote, iVoter)
 {
 	if(IsVoteInProgress())
 	{
-		CPrintToChat(iVoter, "[SM] %t", "Vote in Progress");
+		CPrintToChat(iVoter, "%t", "Vote In Progress");
 		return;
 	}
 
