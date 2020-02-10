@@ -137,7 +137,7 @@ public OnPluginStart()
 	HookConVarChange( CvarDebugMode, OnConVarChanged );
 	CvarAfkManager = CreateConVar("sm_cv_afkenable", "0", "Enable Afk players are no longer counted in the total?", FCVAR_NONE, true, 0.0, true, 1.0); //Enable Afk players are no longer counted in the total?
 	HookConVarChange( CvarAfkManager, OnConVarChanged );
-	CvarAfkTime = CreateConVar("sm_cv_afktime", "10", "How long (Seconds) Afk players are no longer counted in the total?", FCVAR_NONE, true, 0.0, true, 1000.0); //How long Afk players are no longer counted in the total?
+	CvarAfkTime = CreateConVar("sm_cv_afktime", "60", "How long (Seconds) Afk players are no longer counted in the total?", FCVAR_NONE, true, 0.0, true, 1000.0); //How long Afk players are no longer counted in the total?
 	HookConVarChange( CvarAfkTime, OnConVarChanged );
 	
 	RegAdminCmd("sm_customvotes_reload", Command_Reload, ADMFLAG_ROOT, "Reloads the configuration file (Clears all votes)");
