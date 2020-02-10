@@ -443,7 +443,7 @@ public OnClientDisconnect(iTarget)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Vote target disconnected while vote was in progress! The target was: %s ( %s ).",
+				"[Custom Votes] Vote target disconnected while vote was in progress! The target was: %s (%s).",
 				LogstrTargetName,
 				LstrTargetAuth);
 				
@@ -920,7 +920,7 @@ public Vote_Players(iVote, iVoter, iTarget)
 		
 		// Logging Vote
 		LogToFileEx(g_sLogPath,
-			"[Custom Votes] Vote %s started by %s ( %s ) targeting %s ( %s ).",
+			"[Custom Votes] Vote %s started by %s (%s) targeting %s (%s).",
 			LogstrName,
 			LogstrVoterName,
 			LstrVoterAuth,
@@ -1334,7 +1334,7 @@ public Vote_Map(iVote, iVoter, iMap)
 		
 		// Logging Vote
 		LogToFileEx(g_sLogPath,
-			"[Custom Votes] Vote %s started by %s ( %s ). To change map from %s to %s.",
+			"[Custom Votes] Vote %s started by %s (%s). To change map from %s to %s.",
 			LogstrName,
 			LogstrVoterName,
 			LstrVoterAuth,
@@ -1681,7 +1681,7 @@ public Vote_List(iVote, iVoter, iOption)
 		
 		// Logging Vote
 		LogToFileEx(g_sLogPath,
-			"[Custom Votes] Vote %s started by %s ( %s ). Selected Option: %s",
+			"[Custom Votes] Vote %s started by %s (%s). Selected Option: %s",
 			LogstrName,
 			LogstrVoterName,
 			LstrVoterAuth,
@@ -1951,7 +1951,7 @@ public Vote_Simple(iVote, iVoter)
 		
 		// Logging Vote
 		LogToFileEx(g_sLogPath,
-			"[Custom Votes] Vote %s started by %s ( %s ).",
+			"[Custom Votes] Vote %s started by %s (%s).",
 			LogstrName,
 			LogstrVoterName,
 			LstrVoterAuth);
@@ -2520,7 +2520,7 @@ public bool:CheckVotesForTarget(iVote, iTarget)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Last vote ( %s ) passed. The Target was: %s ( %s ).",
+				"[Custom Votes] Last vote (%s) passed. The Target was: %s (%s).",
 				LogstrName,
 				LogstrTargetName,
 				LstrTargetAuth);
@@ -2578,7 +2578,7 @@ public bool:CheckVotesForMap(iVote, iMap)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Last vote ( %s ) passed. Map was changed from %s to %s.",
+				"[Custom Votes] Last vote (%s) passed. Map was changed from %s to %s.",
 				LogstrName,
 				LogstrCurrentMap,
 				LogstrMap);
@@ -2632,7 +2632,7 @@ public bool:CheckVotesForOption(iVote, iOption)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Last vote ( %s ) passed. ( Option: %s ).",
+				"[Custom Votes] Last vote (%s) passed. ( Option: %s ).",
 				LogstrName,
 				LstrOptionResult);
 		}
@@ -2697,7 +2697,7 @@ public bool:CheckVotesForSimple(iVote)
 			
 			// Logging Vote
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Last vote ( %s ) passed.",
+				"[Custom Votes] Last vote (%s) passed.",
 				LogstrName);
 		}
 		return true;
