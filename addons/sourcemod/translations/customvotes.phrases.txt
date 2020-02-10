@@ -9,6 +9,11 @@
 	{
 		"en"	"[SM] You will be banned if you disconnect while this vote is in progress!"
 	}
+	
+	"Map Ending"
+	{
+		"en"	"[SM] Map is ending, unable to start a vote."
+	}
 
 	"No Valid Clients"
 	{
@@ -30,21 +35,27 @@
 		"en"	"[SM] There are not enough players to vote for this."
 	}
 
+	"Vote Cooldown"
+	{
+		"#format"	"{1:i}"
+		"en"		"[SM] You must wait {1} more second(s) before voting for this again."
+	}
+	
+	"Vote Delay"
+	{
+		"#format"	"{1:i}"
+		"en"		"[SM] You must wait {1} more second(s) before voting."
+	}
+	
+	"Vote In Progress"
+	{
+		"en"		"[SM] Vote in progres, unable to create new vote."
+	}
+	
 	"Votes Remaining"
 	{
 		"#format"	"{1:i}"
 		"en"		"[SM] You may vote for this {1} more time(s)."
 	}
 
-	"Vote Delay"
-	{
-		"#format"	"{1:i}"
-		"en"		"[SM] You must wait {1} more second(s) before voting."
-	}
-
-	"Vote Cooldown"
-	{
-		"#format"	"{1:i}"
-		"en"		"[SM] You must wait {1} more second(s) before voting for this again."
-	}
 }

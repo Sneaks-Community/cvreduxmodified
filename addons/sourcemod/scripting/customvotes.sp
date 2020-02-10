@@ -484,15 +484,18 @@ public Action:Command_Reload(iClient, iArgs)
 
 public Action:Command_ChooseVote(iClient, iArgs)
 {
-	if(IsMapEnding)
-		return Plugin_Handled;
-
 	if(!IsValidClient(iClient))
 		return Plugin_Continue;
+		
+	if(IsMapEnding)
+	{
+		CReplyToCommand(iClient, "%t", "Map Ending");
+		return Plugin_Handled;
+	}
 
 	if(IsVoteInProgress())
 	{
-		CReplyToCommand(iClient, "[SM] %t", "Vote in Progress");
+		CReplyToCommand(iClient, "%t", "Vote In Progress");
 		return Plugin_Handled;
 	}
 
