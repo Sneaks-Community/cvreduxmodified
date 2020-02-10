@@ -204,13 +204,13 @@ public OnMapEnd()
 		g_bMapEnded = true;
 	} */
 	
-	if((!IsCSGO || !IsTF2) && !bCancelVoteGameEnd)
+	if((!IsTF2) && !bCancelVoteGameEnd)
 	{
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
+				"[Custom Votes] Map ended while a vote was in progress, canceling vote.");
 		}
 	}
 }
@@ -2175,7 +2175,7 @@ public Action:CSGO_MapEnd(Handle:event, const String:name[], bool:dontBroadcast)
 		{
 			CancelVote(); // cancel any running votes on map end.
 			LogToFileEx(g_sLogPath,
-				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
+				"[Custom Votes] CS:GO Match End Panel detected while a vote was in progress, canceling vote.");
 		}
 	}
 	
