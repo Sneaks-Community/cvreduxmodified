@@ -196,8 +196,6 @@ public OnMapStart()
 
 	Config_Load();
 	CreateTimer(1.0, Timer_Second, _, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
-	
-	CreateLogFile();
 }
 
 public OnMapEnd()
