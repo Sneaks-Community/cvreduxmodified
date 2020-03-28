@@ -9,7 +9,7 @@
 #include <afk_manager>
 // ====[ DEFINES ]=============================================================
 #define PLUGIN_NAME "Custom Votes"
-#define PLUGIN_VERSION "1.17"
+#define PLUGIN_VERSION "1.18"
 #define MAX_VOTE_TYPES 32
 #define MAX_VOTE_MAPS 2048
 #define MAX_VOTE_OPTIONS 32
@@ -83,6 +83,7 @@ new Handle:CvarAutoBanType;
 new Handle:CvarAfkTime;
 new Handle:CvarAfkManager;
 new Handle:CvarCancelVoteGameEnd;
+new Handle:CvarPrintToAdmins;
 new bool:bDebugMode;
 new bool:bResetOnWaveFailed;
 new bool:bAutoBanEnabled;
@@ -90,6 +91,7 @@ new bool:bAutoBanWarning;
 new bool:bAutoBanType;
 new bool:bAfkManagerEnable;
 new bool:bCancelVoteGameEnd;
+new bool:bPrintToAdmins;
 new iAutoBanDuration;
 new bool:IsTF2 = false;
 new bool:IsCSGO = false;
@@ -139,6 +141,8 @@ public OnPluginStart()
 	HookConVarChange( CvarAfkManager, OnConVarChanged );
 	CvarAfkTime = CreateConVar("sm_cv_afktime", "60", "How long (Seconds) Afk players are no longer counted in the total?", FCVAR_NONE, true, 0.0, true, 1000.0); //How long Afk players are no longer counted in the total?
 	HookConVarChange( CvarAfkTime, OnConVarChanged );
+	CvarPrintToAdmins = CreateConVar("sm_cv_printtoadmins", "1", "Prints votes started by players to admins. Default to ADMFLAG_GENERIC, configurable override with sm_customvotes_printtoadmins", FCVAR_NONE, true, 0.0, true, 1.0);
+	HookConVarChange( CvarPrintToAdmins, OnConVarChanged );
 	
 	RegAdminCmd("sm_customvotes_reload", Command_Reload, ADMFLAG_ROOT, "Reloads the configuration file (Clears all votes)");
 	RegAdminCmd("sm_votemenu", Command_ChooseVote, 0, "Opens the vote menu");
@@ -233,6 +237,7 @@ public OnConVarChanged( Handle:hConVar, const String:strOldValue[], const String
 	bDebugMode = GetConVarBool( CvarDebugMode );
 	bAfkManagerEnable = GetConVarBool( CvarAfkManager );
 	iAfkTime = GetConVarBool( CvarAfkTime );
+	bPrintToAdmins = GetConVarBool( CvarPrintToAdmins );
 }
 
 stock DetectGame()
@@ -934,6 +939,9 @@ public Vote_Players(iVote, iVoter, iTarget)
 			LstrVoterAuth,
 			LogstrTargetName,
 			LstrTargetAuth);
+		
+		if (bPrintToAdmins)
+			PrintToAdmins("Vote %s started by %s (%s) targeting %s (%s)", LogstrName, LogstrVoterName, LstrVoterAuth, LogstrTargetName, LstrTargetAuth);
 	}
 
 	new Handle:hMenu = CreateMenu(VoteHandler_Players);
@@ -1348,6 +1356,9 @@ public Vote_Map(iVote, iVoter, iMap)
 			LstrVoterAuth,
 			LogstrCurrentMap,
 			LogstrMap);
+
+		if (bPrintToAdmins)
+			PrintToAdmins("Vote %s started by %s (%s). To change map from %s to %s", LogstrName, LogstrVoterName, LstrVoterAuth, LogstrCurrentMap, LogstrMap);
 	}
 
 	new Handle:hMenu = CreateMenu(VoteHandler_Map);
@@ -1694,6 +1705,9 @@ public Vote_List(iVote, iVoter, iOption)
 			LogstrVoterName,
 			LstrVoterAuth,
 			LstrOptionResult);
+
+		if (bPrintToAdmins)
+			PrintToAdmins("Vote %s started by %s (%s). Selected Option: %s", LogstrName, LogstrVoterName, LstrVoterAuth, LstrOptionResult);
 	}
 
 	new Handle:hMenu = CreateMenu(VoteHandler_List);
@@ -1963,6 +1977,9 @@ public Vote_Simple(iVote, iVoter)
 			LogstrName,
 			LogstrVoterName,
 			LstrVoterAuth);
+		
+		if (bPrintToAdmins)
+			PrintToAdmins("Vote %s started by %s (%s)", LogstrName, LogstrVoterName, LstrVoterAuth);
 	}
 
 	new Handle:hMenu = CreateMenu(VoteHandler_Simple);
@@ -2939,4 +2956,17 @@ stock FormatOptionString(iVote, iOption, String:strBuffer[], iBufferSize)
 stock QuoteString(String:strBuffer[], iBuffersize)
 {
 	Format(strBuffer, iBuffersize + 4, "\"%s\"", strBuffer);
+}
+
+void PrintToAdmins(any ...)
+{
+	char g_Buffer[256];
+
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if (IsClientInGame(i) && CheckCommandAccess(i, "sm_customvotes_printtoadmins", ADMFLAG_GENERIC))
+		{
+			PrintToChat(i, "%s", g_Buffer);
+		}
+	}
 }
