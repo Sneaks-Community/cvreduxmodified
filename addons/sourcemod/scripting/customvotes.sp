@@ -212,6 +212,10 @@ public OnMapEnd()
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
+			g_iCurrentVoteIndex = -1;
+			g_iCurrentVoteTarget = -1;
+			g_iCurrentVoteMap = -1;
+			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath,
 				"[Custom Votes] Map ended while a vote was in progress, canceling vote.");
 		}
@@ -427,7 +431,7 @@ public OnClientDisconnect(iTarget)
 		}
 	}
 	// Experimental vote evasion logging
-	if(g_iCurrentVoteTarget >= 1 && IsVoteInProgress()) // Do we have a target and the vote is in progress
+	if(g_iCurrentVoteTarget >= 1 && IsVoteInProgress() && !IsMapEnding) // Do we have a target and the vote is in progress
 	{
 		if(iTarget == g_iCurrentVoteTarget) // the id of the player who just disconnected matches the vote target id.
 		{
@@ -631,6 +635,12 @@ public Menu_PlayersVote(iVote, iVoter)
 	if(IsVoteInProgress())
 	{
 		CPrintToChat(iVoter, "%t", "Vote In Progress");
+		return;
+	}
+	
+	if(IsMapEnding)
+	{
+		CPrintToChat(iVoter, "%t", "Map Ending");
 		return;
 	}
 
@@ -2127,6 +2137,10 @@ public Action:TF_TeamPlayWinPanel(Handle:event, const String:name[], bool:dontBr
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
+			g_iCurrentVoteIndex = -1;
+			g_iCurrentVoteTarget = -1;
+			g_iCurrentVoteMap = -1;
+			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath,
 				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
 		}
@@ -2148,6 +2162,10 @@ public Action:TF_ArenaWinPanel(Handle:event, const String:name[], bool:dontBroad
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
+			g_iCurrentVoteIndex = -1;
+			g_iCurrentVoteTarget = -1;
+			g_iCurrentVoteMap = -1;
+			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath,
 				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
 		}
@@ -2169,6 +2187,10 @@ public Action:TF_MVMWinPanel(Handle:event, const String:name[], bool:dontBroadca
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
+			g_iCurrentVoteIndex = -1;
+			g_iCurrentVoteTarget = -1;
+			g_iCurrentVoteMap = -1;
+			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath,
 				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
 		}
@@ -2191,6 +2213,10 @@ public Action:CSGO_MapEnd(Handle:event, const String:name[], bool:dontBroadcast)
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
+			g_iCurrentVoteIndex = -1;
+			g_iCurrentVoteTarget = -1;
+			g_iCurrentVoteMap = -1;
+			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath, "[Custom Votes] CS:GO Match End Panel detected while a vote was in progress, canceling vote.");
 		}
 	}
@@ -2207,6 +2233,10 @@ public Action:OnLogAction(Handle:source, Identity:ident, client, target, const S
 	{
 		//g_bMapEnded = true;
 		CancelVote(); // cancel any running votes on map end.
+		g_iCurrentVoteIndex = -1;
+		g_iCurrentVoteTarget = -1;
+		g_iCurrentVoteMap = -1;
+		g_iCurrentVoteOption = -1;
 		LogToFileEx(g_sLogPath,
 			"[Custom Votes] Map manually changed while a vote was in progress, canceling vote.");
 	}
