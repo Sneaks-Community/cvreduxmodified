@@ -9,7 +9,7 @@
 #include <afk_manager>
 // ====[ DEFINES ]=============================================================
 #define PLUGIN_NAME "Custom Votes"
-#define PLUGIN_VERSION "1.18"
+#define PLUGIN_VERSION "1.19"
 #define MAX_VOTE_TYPES 32
 #define MAX_VOTE_MAPS 2048
 #define MAX_VOTE_OPTIONS 32
@@ -216,14 +216,14 @@ public OnMapEnd()
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
-			g_iCurrentVoteIndex = -1;
-			g_iCurrentVoteTarget = -1;
-			g_iCurrentVoteMap = -1;
-			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath,
 				"[Custom Votes] Map ended while a vote was in progress, canceling vote.");
 		}
 	}
+	g_iCurrentVoteIndex = -1;
+	g_iCurrentVoteTarget = -1;
+	g_iCurrentVoteMap = -1;
+	g_iCurrentVoteOption = -1;
 }
 
 public OnConVarChanged( Handle:hConVar, const String:strOldValue[], const String:strNewValue[] )
@@ -342,7 +342,7 @@ public OnClientConnected(iTarget)
 				GetArrayString(g_hArrayVotePlayerIP[iVoter][iVote], iIP, strSavedIP, sizeof(strSavedIP));
 				if(StrEqual(strSavedIP, strClientIP))
 				{
-					g_bVoteForTarget[iVoter][iTarget] = true;
+					g_bVoteForTarget[iVoter][iTarget][iTarget] = true;
 					break;
 				}
 			}
@@ -371,7 +371,7 @@ public OnClientAuthorized(iTarget, const String:strTargetSteamId[])
 				GetArrayString(g_hArrayVotePlayerSteamID[iVoter][iVote], iSteamId, strClientAuth, sizeof(strClientAuth));
 				if(StrEqual(strTargetSteamId, strClientAuth))
 				{
-					g_bVoteForTarget[iVoter][iTarget] = true;
+					g_bVoteForTarget[iVoter][iVote][iTarget] = true;
 					break;
 				}
 			}
@@ -2154,13 +2154,13 @@ public Action:TF_TeamPlayWinPanel(Handle:event, const String:name[], bool:dontBr
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
-			g_iCurrentVoteIndex = -1;
-			g_iCurrentVoteTarget = -1;
-			g_iCurrentVoteMap = -1;
-			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath,
 				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
 		}
+		g_iCurrentVoteIndex = -1;
+		g_iCurrentVoteTarget = -1;
+		g_iCurrentVoteMap = -1;
+		g_iCurrentVoteOption = -1;
 	}
 	
 	if(bDebugMode) // If debug is enabled, log events
@@ -2179,13 +2179,13 @@ public Action:TF_ArenaWinPanel(Handle:event, const String:name[], bool:dontBroad
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
-			g_iCurrentVoteIndex = -1;
-			g_iCurrentVoteTarget = -1;
-			g_iCurrentVoteMap = -1;
-			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath,
 				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
 		}
+		g_iCurrentVoteIndex = -1;
+		g_iCurrentVoteTarget = -1;
+		g_iCurrentVoteMap = -1;
+		g_iCurrentVoteOption = -1;
 	}
 	
 	if(bDebugMode) // If debug is enabled, log events
@@ -2204,13 +2204,13 @@ public Action:TF_MVMWinPanel(Handle:event, const String:name[], bool:dontBroadca
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
-			g_iCurrentVoteIndex = -1;
-			g_iCurrentVoteTarget = -1;
-			g_iCurrentVoteMap = -1;
-			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath,
 				"[Custom Votes] Map end while a vote was in progress, canceling vote.");
 		}
+		g_iCurrentVoteIndex = -1;
+		g_iCurrentVoteTarget = -1;
+		g_iCurrentVoteMap = -1;
+		g_iCurrentVoteOption = -1;
 	}
 	
 	if(bDebugMode) // If debug is enabled, log events
@@ -2230,12 +2230,12 @@ public Action:CSGO_MapEnd(Handle:event, const String:name[], bool:dontBroadcast)
 		if(IsVoteInProgress()) // is vote in progress?
 		{
 			CancelVote(); // cancel any running votes on map end.
-			g_iCurrentVoteIndex = -1;
-			g_iCurrentVoteTarget = -1;
-			g_iCurrentVoteMap = -1;
-			g_iCurrentVoteOption = -1;
 			LogToFileEx(g_sLogPath, "[Custom Votes] CS:GO Match End Panel detected while a vote was in progress, canceling vote.");
 		}
+		g_iCurrentVoteIndex = -1;
+		g_iCurrentVoteTarget = -1;
+		g_iCurrentVoteMap = -1;
+		g_iCurrentVoteOption = -1;
 	}
 	
 	if(bDebugMode) // If debug is enabled, log events
@@ -2250,13 +2250,13 @@ public Action:OnLogAction(Handle:source, Identity:ident, client, target, const S
 	{
 		//g_bMapEnded = true;
 		CancelVote(); // cancel any running votes on map end.
-		g_iCurrentVoteIndex = -1;
-		g_iCurrentVoteTarget = -1;
-		g_iCurrentVoteMap = -1;
-		g_iCurrentVoteOption = -1;
 		LogToFileEx(g_sLogPath,
 			"[Custom Votes] Map manually changed while a vote was in progress, canceling vote.");
 	}
+	g_iCurrentVoteIndex = -1;
+	g_iCurrentVoteTarget = -1;
+	g_iCurrentVoteMap = -1;
+	g_iCurrentVoteOption = -1;
 }
 
 // ====[ FUNCTIONS ]===========================================================
