@@ -9,7 +9,7 @@
 #include <afk_manager>
 // ====[ DEFINES ]=============================================================
 #define PLUGIN_NAME "Custom Votes"
-#define PLUGIN_VERSION "1.19"
+#define PLUGIN_VERSION "1.19-DEV"
 #define MAX_VOTE_TYPES 32
 #define MAX_VOTE_MAPS 2048
 #define MAX_VOTE_OPTIONS 32
@@ -91,7 +91,6 @@ new bool:bAutoBanWarning;
 new bool:bAutoBanType;
 new bool:bAfkManagerEnable;
 new bool:bCancelVoteGameEnd;
-new bool:bPrintToAdmins;
 new iAutoBanDuration;
 new bool:IsTF2 = false;
 new bool:IsCSGO = false;
@@ -237,7 +236,6 @@ public OnConVarChanged( Handle:hConVar, const String:strOldValue[], const String
 	bDebugMode = GetConVarBool( CvarDebugMode );
 	bAfkManagerEnable = GetConVarBool( CvarAfkManager );
 	iAfkTime = GetConVarBool( CvarAfkTime );
-	bPrintToAdmins = GetConVarBool( CvarPrintToAdmins );
 }
 
 stock DetectGame()
@@ -940,7 +938,7 @@ public Vote_Players(iVote, iVoter, iTarget)
 			LogstrTargetName,
 			LstrTargetAuth);
 		
-		if (bPrintToAdmins)
+		if (GetConVarBool(CvarPrintToAdmins))
 			PrintToAdmins("Vote %s started by %s (%s) targeting %s (%s)", LogstrName, LogstrVoterName, LstrVoterAuth, LogstrTargetName, LstrTargetAuth);
 	}
 
@@ -1357,8 +1355,8 @@ public Vote_Map(iVote, iVoter, iMap)
 			LogstrCurrentMap,
 			LogstrMap);
 
-		if (bPrintToAdmins)
-			PrintToAdmins("Vote %s started by %s (%s). To change map from %s to %s", LogstrName, LogstrVoterName, LstrVoterAuth, LogstrCurrentMap, LogstrMap);
+		if (GetConVarBool(CvarPrintToAdmins))
+			PrintToAdmins("Vote %s started by %s (%s)", LogstrName, LogstrVoterName, LstrVoterAuth);
 	}
 
 	new Handle:hMenu = CreateMenu(VoteHandler_Map);
@@ -1706,8 +1704,8 @@ public Vote_List(iVote, iVoter, iOption)
 			LstrVoterAuth,
 			LstrOptionResult);
 
-		if (bPrintToAdmins)
-			PrintToAdmins("Vote %s started by %s (%s). Selected Option: %s", LogstrName, LogstrVoterName, LstrVoterAuth, LstrOptionResult);
+		if (GetConVarBool(CvarPrintToAdmins))
+			PrintToAdmins("Vote %s started by %s (%s).", LogstrName, LogstrVoterName, LstrVoterAuth);
 	}
 
 	new Handle:hMenu = CreateMenu(VoteHandler_List);
@@ -1978,7 +1976,7 @@ public Vote_Simple(iVote, iVoter)
 			LogstrVoterName,
 			LstrVoterAuth);
 		
-		if (bPrintToAdmins)
+		if (GetConVarBool(CvarPrintToAdmins))
 			PrintToAdmins("Vote %s started by %s (%s)", LogstrName, LogstrVoterName, LstrVoterAuth);
 	}
 
@@ -2958,7 +2956,7 @@ stock QuoteString(String:strBuffer[], iBuffersize)
 	Format(strBuffer, iBuffersize + 4, "\"%s\"", strBuffer);
 }
 
-void PrintToAdmins(any ...)
+void PrintToAdmins(const char[] format, any ...)
 {
 	char g_Buffer[256];
 
@@ -2966,6 +2964,10 @@ void PrintToAdmins(any ...)
 	{
 		if (IsClientInGame(i) && CheckCommandAccess(i, "sm_customvotes_printtoadmins", ADMFLAG_GENERIC))
 		{
+			SetGlobalTransTarget(i);
+
+			VFormat(g_Buffer, sizeof(g_Buffer), format, 2);
+
 			PrintToChat(i, "%s", g_Buffer);
 		}
 	}
